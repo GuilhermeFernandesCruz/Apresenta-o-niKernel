@@ -21,33 +21,52 @@
 </div>
 
 <div class="card shadow-sm">
-    <div class="card-body">
-        <table class="table table-striped">
+<div class="card-body p-0">
+        <table class="table table-striped table-hover mb-0">
+            <thead class="table-dark">
             <thead>
                 <tr>
                     <th>Id</th>
                     <th>Descrição</th>
                     <th>Status</th>
-                    <th>Ações</th>
+                    <th width="15%" class="text-end">Ações</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var c in Model.Categorias)
-                {
+            @if (!Model.Categorias.Any()) {
+                <tr>
+                    <td colspan="6" class="text-center py-4 texte-muted">Nenhuma categoria cadastrada.</td>
+                </tr>
+            } else {
+                foreach (var categoria in Model.Categorias) {
                     <tr>
-                        <td>@c.ctg_id</td>
-                        <td>@c.ctg_dcc</td>
-                        <td>@c.ctg_sta</td>
-                        <td>
-                            <a asp-page="/Categorias/Editar" asp-route-id="@c.ctg_id" class="btn btn-sm btn-outline-secondary">Editar</a>
-                            <form method="post" asp-page-handler="Deletar" class="d-inline">
-                                <input type="hidden" name="id" value="@c.ctg_id" />
-                                <button type="submit" class="btn btn-sm btn-danger">Inativar</button>
-                            </form>
+                        <td class="align-middle">@categoria.ctg_id</td>
+                        <td class="align-middle">@categoria.ctg_dcc</td>
+                        <td class="align-middle">
+                            @if (categoria.ctg_sta == "S") {
+                                <span class="badge bg-success">Ativo</span>
+                            } else {
+                                <span class="badge bg-secondary">Inativo</span>
+                            }
+                        </td>
+                        <td class="acoes">
+                            @if (podeAtualizar) {
+                                <a asp-page="Editar" asp-route-id="@categoria.ctg_id" class="btn btn-sm btn-outline-primary me-1 btn-acao"><i class="bi bi-pencil"></i> Atualizar</a>
+                            }
+                            @if (podeDeletar && categoria.ctg_sta == "S") {
+                                <button type="button"
+                                        class="btn btn-sm btn-outline-danger btn-deletar btn-acao"
+                                        data-id="@categoria.ctg_id"
+                                        data-descricao="@categoria.ctg_dcc">
+                                    <i class="bi bi-trash"></i> Excluir
+                                </button>
+                            }
                         </td>
                     </tr>
                 }
+            }
             </tbody>
         </table>
+    </div>
     </div>
 </div>
